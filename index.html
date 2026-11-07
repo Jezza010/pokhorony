@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Название сервера — Minecraft</title>
+<meta name="description" content="Уютный Minecraft-сервер для друзей: ванила+ с кухней, баром, рыбалкой, фотографией и заводами Create.">
+<meta name="color-scheme" content="dark">
+<style>
+@font-face{font-family:"Jost";font-style:normal;font-weight:100 900;font-display:swap;src:url(fonts/jost-var.woff2) format("woff2")}
+@font-face{font-family:"Tiny5";font-style:normal;font-weight:400;font-display:swap;src:url(fonts/tiny5-cyrillic-400-normal.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"Tiny5";font-style:normal;font-weight:400;font-display:swap;src:url(fonts/tiny5-latin-400-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+:root{
+  --bg:#f6f4ef; --surface:#ffffff; --surface-2:#efece5; --text:#24221d; --muted:#5f5a50;
+  --line:#e2ddd2; --accent:#4c7a5a; --accent-soft:#e3ede5; --accent-text:#ffffff;
+  --warm:#b9772f; --warm-soft:#f5e9da; --danger:#b5483b; --danger-soft:#f6e3e0;
+  --radius:14px; --shadow:0 1px 2px rgba(30,25,15,.05),0 4px 16px rgba(30,25,15,.05);
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --px:"Tiny5",ui-monospace,monospace; --world-op:1; --panel:74%; --panel-c:#efece5; --panel-w:1260px; --fade:0px; --head:"Jost",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; --hard:#d9d3c5;
+}
+@media all{
+  :root{
+    --bg:#16171a; --surface:#1e2024; --surface-2:#262930; --text:#ece9e2; --muted:#a29e95;
+    --line:#30333a; --accent:#8cbf98; --accent-soft:#233229; --accent-text:#10160f;
+    --warm:#e0a560; --warm-soft:#33291d; --danger:#e58a7d; --danger-soft:#3a2522;
+    --shadow:none; --hard:#0d0e10; --world-op:.52; --panel:84%; --panel-c:#16171a;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-underline-offset:2px}
+img{max-width:100%;display:block}
+code,kbd,.mono{font-family:var(--mono);font-size:.92em}
+code{background:var(--surface-2);padding:.1em .4em;border-radius:6px;word-break:break-word}
+kbd{display:inline-block;min-width:1.7em;text-align:center;padding:.05em .45em;border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;background:var(--surface);font-size:.85em}
+.wrap{max-width:calc(var(--panel-w) - 80px);margin:0 auto;padding:0 20px}
+section{padding:64px 0;border-top:1px solid var(--line)}
+section,#first,#fallback{scroll-margin-top:64px}
+h1,h2,h3{line-height:1.2;letter-spacing:-.01em;margin:0 0 .5em}
+h2{font-size:clamp(1.5rem,3vw,2rem)}
+h3{font-size:1.1rem}
+p{margin:0 0 1em}
+.lead{color:var(--muted);font-size:1.08rem;max-width:62ch}
+.muted{color:var(--muted)}
+.small{font-size:.9rem}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;gap:20px;height:56px}
+.brand{font-weight:700;color:var(--text);text-decoration:none;white-space:nowrap}
+.nav nav{display:flex;gap:18px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+.nav nav::-webkit-scrollbar{display:none}
+.nav nav a{color:var(--muted);text-decoration:none;font-size:.93rem;white-space:nowrap}
+.nav nav a:hover{color:var(--text)}
+
+/* hero */
+.hero{text-align:center;padding:72px 0 64px;border-top:0}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:4px 12px;border:1px solid var(--line);border-radius:99px;color:var(--muted);font-size:.85rem;background:var(--surface)}
+.hero h1{font-size:clamp(2.2rem,6vw,3.6rem);margin:18px 0 10px}
+.hero .lead{margin:0 auto 32px}
+.ipbox{display:inline-flex;align-items:stretch;max-width:100%;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow);overflow:hidden}
+.ipbox .ip{font-family:var(--mono);font-size:clamp(1.05rem,3.4vw,1.5rem);padding:14px 22px;letter-spacing:.02em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn{appearance:none;border:0;cursor:pointer;font:inherit;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;border-radius:10px;padding:10px 18px;transition:filter .15s,transform .05s}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--accent);color:var(--accent-text)}
+.btn-primary:hover{filter:brightness(1.07)}
+.btn-ghost{background:var(--surface);color:var(--text);border:1px solid var(--line)}
+.btn-ghost:hover{background:var(--surface-2)}
+.ipbox .btn{border-radius:0;padding:0 22px}
+.status{margin-top:14px;font-size:.9rem;color:var(--muted);display:flex;justify-content:center;align-items:center;gap:8px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.dot.on{background:#3fae5c;box-shadow:0 0 0 3px color-mix(in srgb,#3fae5c 25%,transparent)}
+.dot.off{background:var(--danger)}
+.hero-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:30px}
+
+.countdown{margin:40px auto 0;max-width:520px;padding:18px 20px;border:1px dashed var(--line);border-radius:var(--radius)}
+.countdown .label{color:var(--muted);font-size:.9rem;margin-bottom:8px}
+.cd{display:flex;justify-content:center;gap:10px}
+.cd div{min-width:68px}
+.cd b{display:block;font-family:var(--mono);font-size:1.8rem;font-weight:600;line-height:1.1}
+.cd span{color:var(--muted);font-size:.78rem}
+.cd-done{font-size:1.2rem;font-weight:600}
+
+/* grids & cards */
+.grid{display:grid;gap:16px}
+.g3{grid-template-columns:repeat(auto-fill,minmax(min(100%,max(270px,calc((100% - 32px) / 3))),1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,max(320px,calc((100% - 16px) / 2))),1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.card p:last-child{margin-bottom:0}
+.facts{margin-top:28px}
+.fact h3{display:flex;align-items:center;gap:10px}
+.icon{width:34px;height:34px;border-radius:10px;display:inline-grid;place-items:center;background:var(--accent-soft);color:var(--accent);flex:none}
+.icon svg{width:18px;height:18px}
+
+.act{padding:0;overflow:hidden;display:flex;flex-direction:column}
+.shot{position:relative;aspect-ratio:16/9;background:var(--surface-2);margin:0;overflow:hidden}
+.shot img,.shot video{width:100%;height:100%;object-fit:cover;display:block}
+.shot .ph{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:12px;color:var(--muted);font-size:.82rem;font-family:var(--mono);background:repeating-linear-gradient(45deg,var(--surface-2) 0 12px,color-mix(in srgb,var(--surface-2) 70%,var(--surface)) 12px 24px)}
+.shot img ~ .ph,.shot video ~ .ph{display:none}
+.act .body{padding:16px 18px 18px}
+.act .mods{color:var(--muted);font-size:.83rem;margin-top:10px}
+
+.note{border-radius:var(--radius);padding:16px 18px;border:1px solid var(--line);background:var(--surface)}
+.note.accent{background:var(--accent-soft);border-color:transparent}
+.note.warm{background:var(--warm-soft);border-color:transparent}
+.note.danger{background:var(--danger-soft);border-color:transparent}
+.note p:last-child{margin-bottom:0}
+.note strong:first-child{display:block;margin-bottom:4px}
+
+/* install */
+.need{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));margin:24px 0}
+.need .card{display:flex;flex-direction:column;gap:10px}
+.need .card .btn{align-self:flex-start}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:28px 0 0;border-bottom:1px solid var(--line)}
+.tab{appearance:none;background:none;border:0;border-bottom:2px solid transparent;padding:10px 14px;margin-bottom:-1px;font:inherit;font-weight:600;color:var(--muted);cursor:pointer}
+.tab[aria-selected="true"]{color:var(--text);border-bottom-color:var(--accent)}
+.panel{padding:24px 0 0}
+.panel[hidden]{display:none}
+ol.steps{counter-reset:s;list-style:none;padding:0;margin:0;display:grid;gap:14px}
+ol.steps>li{counter-increment:s;position:relative;padding-left:46px}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-weight:700;display:grid;place-items:center;font-size:.9rem}
+ol.steps>li>b:first-child{display:block}
+.fp{display:flex;gap:8px;align-items:stretch;margin-top:8px;flex-wrap:wrap}
+.fp code{flex:1 1 280px;padding:10px 12px;font-size:.82rem;display:flex;align-items:center;word-break:break-all}
+
+/* tables */
+table{width:100%;border-collapse:collapse;font-size:.94rem}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:.82rem;text-transform:uppercase;letter-spacing:.04em}
+.tbl{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.tbl tr:last-child td{border-bottom:0}
+
+.badge{display:inline-block;font-size:.74rem;font-weight:600;padding:2px 8px;border-radius:99px;white-space:nowrap}
+.b-all{background:var(--accent-soft);color:var(--accent)}
+.b-client{background:var(--warm-soft);color:var(--warm)}
+.b-server{background:var(--surface-2);color:var(--muted)}
+
+/* mods list */
+.modtools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:24px 0 8px}
+.search{flex:1 1 260px;font:inherit;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--text)}
+.search:focus,.btn:focus-visible,.tab:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.group{margin-top:26px}
+.group h3{display:flex;align-items:baseline;gap:10px}
+.group h3 span{color:var(--muted);font-weight:400;font-size:.9rem}
+.modname{font-weight:600}
+.ver{font-family:var(--mono);font-size:.82rem;color:var(--muted);white-space:nowrap}
+.links a{white-space:nowrap;margin-right:10px;font-size:.9rem}
+.src{font-size:.75rem;color:var(--muted);white-space:nowrap}
+
+/* раскрывающиеся блоки */
+details{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:0 18px;margin-bottom:10px}
+summary{cursor:pointer;font-weight:600;padding:14px 0;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--muted);font-weight:400}
+details[open] summary::after{content:"–"}
+details>div{padding:0 0 16px}
+
+.keys td:first-child{white-space:nowrap;width:1%}
+.modsbox{margin-top:16px}
+.modsbox>summary{font-size:1.02rem}
+.modsbox .group:first-child{margin-top:8px}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:.9rem;opacity:0;pointer-events:none;transition:.2s}
+/* ---- фон-мир ---- */
+#world{position:fixed;left:0;top:0;width:100vw;z-index:-1;pointer-events:none;image-rendering:pixelated;image-rendering:crisp-edges;opacity:var(--world-op);will-change:transform}
+html,body{overflow-x:clip}
+main{position:relative;max-width:var(--panel-w);margin:0 auto;isolation:isolate}
+/* подложка: плотная под текстом и плавно (по S-кривой) растворяется в фон по бокам */
+main::before{content:"";position:absolute;top:0;bottom:0;left:calc(-1 * var(--fade));right:calc(-1 * var(--fade));z-index:-1;pointer-events:none;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);box-shadow:0 0 0 1px color-mix(in srgb,var(--line) 60%,transparent);
+  background:color-mix(in srgb,var(--panel-c) var(--panel),transparent);
+  --m:linear-gradient(to right,
+    rgba(0,0,0,0) 0,rgba(0,0,0,.03) calc(var(--fade) * .12),rgba(0,0,0,.1) calc(var(--fade) * .25),rgba(0,0,0,.24) calc(var(--fade) * .38),
+    rgba(0,0,0,.42) calc(var(--fade) * .5),rgba(0,0,0,.62) calc(var(--fade) * .62),rgba(0,0,0,.8) calc(var(--fade) * .75),rgba(0,0,0,.93) calc(var(--fade) * .88),#000 var(--fade),
+    #000 calc(100% - var(--fade)),
+    rgba(0,0,0,.93) calc(100% - var(--fade) * .88),rgba(0,0,0,.8) calc(100% - var(--fade) * .75),rgba(0,0,0,.62) calc(100% - var(--fade) * .62),rgba(0,0,0,.42) calc(100% - var(--fade) * .5),
+    rgba(0,0,0,.24) calc(100% - var(--fade) * .38),rgba(0,0,0,.1) calc(100% - var(--fade) * .25),rgba(0,0,0,.03) calc(100% - var(--fade) * .12),rgba(0,0,0,0) 100%);
+  -webkit-mask-image:var(--m);mask-image:var(--m)}
+@media (max-width:1100px){main::before{left:0;right:0;-webkit-mask-image:none;mask-image:none}}
+@media (max-width:640px){main::before{background:color-mix(in srgb,var(--panel-c) 92%,transparent)}}
+/* ---- пиксельный стиль ---- */
+.chip{font-family:var(--px);font-weight:400;letter-spacing:.03em}
+h1,h2,h3,.brand,.btn,.tab,.cd b,.ipbox .ip,summary,.badge{font-family:var(--head);letter-spacing:0}
+h2{font-size:clamp(1.8rem,4vw,2.4rem);font-weight:650}
+h3{font-size:1.2rem;font-weight:600}
+.hero h1{font-size:clamp(2.6rem,8vw,4.4rem);line-height:1.02;font-weight:700;letter-spacing:-.015em}
+.brand{font-weight:650}
+.chip{font-size:.95rem}
+.btn{border-radius:0;font-size:1.02rem;font-weight:600;padding:10px 18px;box-shadow:inset -3px -3px 0 rgba(0,0,0,.22),inset 3px 3px 0 rgba(255,255,255,.28)}
+.btn-ghost{border:2px solid var(--text)}
+.btn-primary{border:2px solid color-mix(in srgb,var(--accent) 60%,#000)}
+.card,.tbl,.ipbox,.countdown,details,.search,.note,.chip{border-radius:0}
+.card,.tbl,details{border-width:2px;box-shadow:4px 4px 0 var(--hard)}
+.ipbox{border:2px solid var(--text);box-shadow:5px 5px 0 var(--hard)}
+.ipbox .btn{border:0;border-left:2px solid var(--text)}
+.ipbox .ip{font-size:clamp(1.25rem,4vw,1.8rem);font-weight:500}
+.countdown{border:2px dashed var(--line)}
+.cd b{font-size:2.3rem;font-weight:600;font-variant-numeric:tabular-nums}
+.icon{border-radius:0;background:none;width:32px;height:32px}
+.px{display:inline-block;width:28px;height:28px;flex:none;image-rendering:pixelated}
+.px svg{width:100%;height:100%;display:block}
+.act h3{display:flex;align-items:center;gap:10px}
+.tab{font-size:1.02rem;font-weight:600}
+kbd{border-radius:0;border-width:2px;box-shadow:inset -2px -2px 0 rgba(0,0,0,.12)}
+.badge{border-radius:0;font-size:.78rem;font-weight:600}
+.shot .ph{font-family:var(--head);font-size:.95rem}
+.toast{border-radius:0;font-family:var(--head)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media (max-width:640px){
+  section{padding:48px 0}
+  .hero{padding:48px 0}
+  .ipbox{flex-direction:column;width:100%}
+  .ipbox .btn{padding:12px}
+  .brand{display:none}
+  .nav nav{margin-left:0;gap:10px}
+  .nav nav a{font-size:.82rem}
+  /* mod tables become stacked rows */
+  .tbl thead{display:none}
+  .tbl tr{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:12px 14px;border-bottom:1px solid var(--line)}
+  .tbl td{border:0;padding:0}
+  .tbl td.desc{grid-column:1/-1;color:var(--muted)}
+  .tbl td.lnk{grid-column:1/-1}
+  .tiers td,.tiers th{padding:8px}
+}
+</style>
+</head>
+<body>
+<canvas id="world" aria-hidden="true"></canvas>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" data-cfg="serverName">Название сервера</a>
+    <nav aria-label="Разделы">
+      <a href="#about">О сервере</a>
+      <a href="#play">Занятия</a>
+      <a href="#install">Установка</a>
+      <a href="#tips">Советы</a>
+      <a href="#mods">Моды</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+<section class="hero">
+  <div class="wrap">
+    <span class="chip">Minecraft 1.21.1 · NeoForge · ванила+</span>
+    <h1 data-cfg="serverName">Крутой сервер</h1>
+    <p class="lead">Дайте денег пожалуйста</p>
+
+    <div class="ipbox">
+      <div class="ip" data-cfg="ip">play.example.ru</div>
+      <button class="btn btn-primary" data-copy-cfg="ip">Скопировать IP</button>
+    </div>
+    <div class="status" id="status"><span class="dot"></span><span>Статус появится после запуска</span></div>
+
+    <div class="hero-actions">
+      <a class="btn btn-ghost" href="#install">Как начать играть</a>
+    </div>
+
+    <div class="countdown" id="countdown" aria-live="polite">
+      <div class="label">До запуска <span class="muted"></span></div>
+      <div class="cd" id="cd">
+        <div><b id="cd-d">0</b><span>дней</span></div>
+        <div><b id="cd-h">00</b><span>часов</span></div>
+        <div><b id="cd-m">00</b><span>минут</span></div>
+        <div><b id="cd-s">00</b><span>секунд</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="wrap">
+    <h2>О сервере</h2>
+    <p class="lead">Я вас ненавижу.</p>
+    <div class="grid g3 facts">
+      <div class="card fact">
+        <h3><span class="px" data-px="house"></span>Ванила+</h3>
+        <p>Тот же майнкрафт, только не майнкрафт, но в духе майнкрафт. По согласованию со всеми можно добавлять мини-моды или аддоны к уже установленным.</p>
+      </div>
+      <div class="card fact">
+        <h3><span class="px" data-px="check"></span>Проверенные моды</h3>
+        <p>Все моды взяты с Modrinth и CurseForge.</p>
+      </div>
+      <div class="card fact">
+        <h3><span class="px" data-px="down"></span>Один файл</h3>
+        <p>Ставишь AutoModpack и заходишь — остальное скачается само.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="play">
+  <div class="wrap">
+    <h2>Чем заняться</h2>
+    <div class="grid g3" style="margin-top:24px">
+      <article class="card act"><figure class="shot"><video src="img/create.mp4" autoplay muted loop playsinline preload="metadata" aria-hidden="true" onerror="this.remove()"></video><span class="ph">img/create.mp4</span></figure><div class="body"><h3><span class="px" data-px="gear"></span>Заводы</h3><p>Стройте удивительные механизмы с помощью Create.</p></div></article>
+      <article class="card act"><figure class="shot"><video src="img/cooking.mp4" autoplay muted loop playsinline preload="metadata" aria-hidden="true" onerror="this.remove()"></video><span class="ph">img/cooking.mp4</span></figure><div class="body"><h3><span class="px" data-px="pot"></span>Кухня</h3><p>Плита, кастрюли, духовка и сотни блюд чтобы накормить своих друзей.</p></div></article>
+      <article class="card act"><figure class="shot"><img src="img/bar.webp" alt="" loading="lazy" onerror="this.remove()"><span class="ph">img/bar.webp</span></figure><div class="body"><h3><span class="px" data-px="mug"></span>Бар</h3><p>Пиво, сыр, пиво, соленьи, пиво, вино и больше сорока коктейлей.</p></div></article>
+      <article class="card act"><figure class="shot"><video src="img/fishing.mp4" autoplay muted loop playsinline preload="metadata" aria-hidden="true" onerror="this.remove()"></video><span class="ph">img/fishing.mp4</span></figure><div class="body"><h3><span class="px" data-px="fish"></span>Рыбалка</h3><p>100+ видов рыбы, у каждого биома свой улов (прямо как в страдью 😳).</p></div></article>
+      <article class="card act"><figure class="shot"><video src="img/photo.mp4" autoplay muted loop playsinline preload="metadata" aria-hidden="true" onerror="this.remove()"></video><span class="ph">img/photo.mp4</span></figure><div class="body"><h3><span class="px" data-px="camera"></span>Фотография</h3><p>Пленочная камера и полароид. Запечатлейте важные моменты.</p></div></article>
+      <article class="card act"><figure class="shot"><img src="img/painting.webp" alt="" loading="lazy" onerror="this.remove()"><span class="ph">img/painting.webp</span></figure><div class="body"><h3><span class="px" data-px="palette"></span>Живопись</h3><p>Выплесни свои идеи на холсте.</p></div></article>
+      <article class="card act"><figure class="shot"><img src="img/music.webp" alt="" loading="lazy" onerror="this.remove()"><span class="ph">img/music.webp</span></figure><div class="body"><h3><span class="px" data-px="note"></span>Музыка</h3><p>Стань Бетховеном. Станешь? 😞</p></div></article>
+      <article class="card act"><figure class="shot"><video src="img/home.mp4" autoplay muted loop playsinline preload="metadata" aria-hidden="true" onerror="this.remove()"></video><span class="ph">img/home.mp4</span></figure><div class="body"><h3><span class="px" data-px="mail"></span>Дом и почта</h3><p>Разнообразный набор мебели для украшения вашего домика.</p></div></article>
+      <article class="card act"><figure class="shot"><video src="img/tobacco.mp4" autoplay muted loop playsinline preload="metadata" aria-hidden="true" onerror="this.remove()"></video><span class="ph">img/tobacco.mp4</span></figure><div class="body"><h3><span class="px" data-px="leaf"></span>Табачная лавка</h3><p>Вырасти табак, скрути сигару, накурись.</p></div></article>
+    </div>
+  </div>
+</section>
+
+<section id="install">
+  <div class="wrap">
+    <h2>Установка</h2>
+    <p class="lead">Нужны две вещи: <b>NeoForge 21.1.265</b> и мод <b>AutoModpack</b>. Остальное (~195 МБ) скачается само при первом заходе.</p>
+
+    <div class="hero-actions" style="justify-content:flex-start;margin-top:18px">
+      <a class="btn btn-ghost" href="https://maven.neoforged.net/releases/net/neoforged/neoforge/21.1.265/neoforge-21.1.265-installer.jar">Скачать NeoForge 21.1.265</a>
+      <a class="btn btn-primary" href="https://cdn.modrinth.com/data/k68glP2e/versions/QpFRQTSU/automodpack-mc1.21.1-neoforge-4.0.7.jar">Скачать AutoModpack 4.0.7</a>
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="Лаунчер">
+      <button class="tab" role="tab" aria-selected="true" aria-controls="t-tl" id="tb-tl">TLauncher</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="t-mr" id="tb-mr">Modrinth App / Prism</button>
+    </div>
+
+    <div class="panel" role="tabpanel" id="t-tl" aria-labelledby="tb-tl">
+      <ol class="steps">
+        <li><b>Поставь NeoForge</b>Запусти один раз обычную 1.21.1 и закрой. Потом открой установщик NeoForge → <b>Install client</b> → OK.</li>
+        <li><b>Выбери версию</b>Перезапусти TLauncher, выбери <code>neoforge-21.1.265</code>, выдели игре 4–6 ГБ памяти.</li>
+        <li><b>Положи AutoModpack</b>В папку игры → <code>mods</code>. Больше там ничего быть не должно.</li>
+        <li><b>Зайди на сервер</b>Введи отпечаток (ниже), подтверди загрузку и перезапусти игру.</li>
+      </ol>
+    </div>
+
+    <div class="panel" role="tabpanel" id="t-mr" aria-labelledby="tb-mr" hidden>
+      <ol class="steps">
+        <li><b>Создай сборку</b>Minecraft <code>1.21.1</code>, загрузчик NeoForge <code>21.1.265</code>, память 4–6 ГБ.</li>
+        <li><b>Добавь AutoModpack</b>Через поиск модов в лаунчере, версия <code>4.0.7</code>. Больше ничего.</li>
+        <li><b>Зайди на сервер</b>Введи отпечаток (ниже), подтверди загрузку и перезапусти игру.</li>
+      </ol>
+    </div>
+
+    <div class="card" style="margin-top:24px">
+      <h3>Отпечаток сервера</h3>
+      <p class="muted small">AutoModpack спросит разрешение только один раз. Это нужно чтобы удостовериться что моды получены непосредственно с сервера, а их контрольные суммы совпадают с оригинальными файлами.</p>
+      <div class="fp">
+        <code data-cfg="fingerprint">появится после запуска сервера</code>
+        <button class="btn btn-ghost" data-copy-cfg="fingerprint">Скопировать</button>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px" id="first">
+      <h3>Первый вход</h3>
+      <p>Первый раз: <code>/register пароль</code>, дальше: <code>/login пароль</code>.</p>
+      <p class="small"><b>Есть лицензия?</b> В самый первый заход, с пустым инвентарем, напиши <code>/online пароль</code> — дальше будешь входить без пароля. Позже делать нельзя: может пропасть прогресс.</p>
+    </div>
+
+    <div class="card" style="margin-top:16px" id="fallback">
+      <h3><span class="px" data-px="chest"></span> Не получилось? Запасной способ</h3>
+      <div class="grid g2" style="gap:20px">
+        <div>
+          <p><b>Modrinth App или Prism</b> — скачай файл сборки и открой его в лаунчере. Он поставит всё сам.</p>
+          <a class="btn btn-primary" data-href-cfg="mrpack" href="#">Скачать сборку (.mrpack)</a>
+          <p class="small muted" style="margin-top:12px">Лаунчер предупредит про 4 файла с CurseForge — это нормально, если это <code>framework</code>, <code>mighty_mail</code>, <code>wick</code> и <code>xercapaint</code>.</p>
+        </div>
+        <div>
+          <p><b>TLauncher и любой другой</b> — поставь NeoForge 21.1.265 и скачай моды по кнопкам «файл» из <a href="#mods">списка модов</a>:</p>
+          <ul class="small" style="margin:0;padding-left:18px">
+            <li>моды «Все» и «Игра» → папка <code>mods</code></li>
+            <li>шейдер → <code>shaderpacks</code>, паки анимаций → <code>resourcepacks</code></li>
+            <li>моды «Сервер» не нужны, AutoModpack тоже</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="tips">
+  <div class="wrap">
+    <h2>Советы</h2>
+    <div class="grid g3" style="margin-top:20px">
+      <div class="tbl">
+        <table class="keys"><tbody>
+          <tr><td><kbd>R</kbd> / <kbd>U</kbd></td><td>Рецепт предмета / где он нужен</td></tr>
+          <tr><td><kbd>W</kbd> <span class="muted small">зажать</span></td><td>Урок по предмету (Create, табак и др.)</td></tr>
+          <tr><td><kbd>Ctrl</kbd>+<kbd>O</kbd></td><td>Спрятать список предметов справа</td></tr>
+          <tr><td><kbd>M</kbd></td><td>Карта мира</td></tr>
+          <tr><td><kbd>V</kbd></td><td>Настройки голосового чата</td></tr>
+          <tr><td><kbd>L</kbd></td><td>Достижения — подсказывают, что делать дальше</td></tr>
+        </tbody></table>
+      </div>
+      <div class="card">
+        <h3>Шейдеры и анимации</h3>
+        <p class="small">По стандарту в сборке есть <b>Complementary Reimagined</b>, он рекомендован так как мэтчится с Create. Настройки → Графика → Shader Packs.</p>
+        <p class="small"><b>Fresh Animations</b>: анимации мобов и игроков. Настройки → Пакеты ресурсов.</p>
+      
+      </div>
+      <div class="card">
+        <h3><span class="px" data-px="book"></span> Гайды в игре</h3>
+        <p class="small">Многие моды учат сами, также смотрите по <b>достижениям</b> — там есть подсказки. У некоторых модов есть <b>книги-гайды</b>: журнал рыбака дают сразу, а книгу табачника можно скрафтить — найдите ее в списке справа и нажми <kbd>R</kbd>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="mods">
+  <div class="wrap">
+    <h2>Моды</h2>
+    <p class="lead">Ставить вручную ничего не нужно — список для любопытных.</p>
+    <details class="modsbox">
+      <summary><span>Показать все моды <span class="muted" id="modtotal"></span></span></summary>
+      <div>
+        <p class="small">
+          <span class="badge b-all">Все</span> у всех ·
+          <span class="badge b-client">Игра</span> только у игрока ·
+          <span class="badge b-server">Сервер</span> только на сервере
+        </p>
+        <div class="modtools">
+          <input class="search" id="modsearch" type="search" placeholder="Найти мод…" aria-label="Поиск по модам">
+          <span class="muted small" id="modcount"></span>
+        </div>
+        <div id="modlist"></div>
+      </div>
+    </details>
+
+  </div>
+</section>
+
+</main>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script src="world.js"></script>
+<script>
+/* ===================== НАСТРОЙКИ — МЕНЯТЬ ТУТ ===================== */
+const CONFIG = {
+  serverName: "Крутой сервер",
+  ip: "play.example.ru",                 // адрес сервера
+  fingerprint: "",                        // отпечаток: в консоли сервера команда  automodpack host fingerprint
+  launch: "2026-11-07T18:00:00+03:00",    // дата и время запуска (московское время)
+  mrpack: "files/server.mrpack"           // путь к файлу сборки в репозитории
+};
+/* ================================================================== */
+
+const MR = "https://modrinth.com/project/";
+const CF = "https://www.curseforge.com/minecraft/";
+const cdn = (p,v,f)=>`https://cdn.modrinth.com/data/${p}/versions/${v}/${f}`;
+
+/* ===================== СПИСОК МОДОВ — МОЖНО ДОПОЛНЯТЬ =====================
+   Одна строка = один мод. Формат:
+   ["Название", "Что делает", "Версия", "где нужен", "ссылка на страницу", "ссылка на файл", "cf"],
+     где нужен:  "all" — у всех,  "client" — только у игрока,  "server" — только на сервере
+     ссылка на файл — можно null, тогда кнопки «файл» не будет
+     "cf" в конце — если мод с CurseForge (для Modrinth ничего не пиши)
+   Не забудь запятую после строки. После добавления мода на сервер заново
+   выгрузи .mrpack из Modrinth App, чтобы запасной способ тоже обновился.
+   ========================================================================== */
+const MODS = {
+  "Контент": [
+    ["Create","Механизмы, заводы и поезда","6.0.10","all",MR+"LNytGWDc",cdn("LNytGWDc","UjX6dr61","create-1.21.1-6.0.10.jar")],
+    ["Create Deco","Декоративные блоки в стиле Create","2.1.3","all",MR+"sMvUb4Rb",cdn("sMvUb4Rb","qrcMVoBD","createdeco-2.1.3.jar")],
+    ["Copycats+","Блоки-копии любых форм для Create","3.0.9","all",MR+"UT2M39wf",cdn("UT2M39wf","bPYeUWZx","copycats-3.0.9%2Bmc.1.21.1-neoforge.jar")],
+    ["Create: Central Kitchen","Автоматизация кухни через Create","2.6.2b","all",MR+"btq68HMO",cdn("btq68HMO","qZxkZR8W","create-central-kitchen-2.6.2b.jar")],
+    ["Farmer's Delight","Готовка: плита, кастрюля, сковорода, новые культуры","1.3.4","all",MR+"R2OftAxM",cdn("R2OftAxM","XTVZDOol","FarmersDelight-1.21.1-1.3.4.jar")],
+    ["Extra Delight","Духовка, тесто, соки и много новых блюд","2.6.6","all",MR+"yRrY3XII",cdn("yRrY3XII","1SSgrmDa","extradelight-2.6.6.jar")],
+    ["Brewin' and Chewin'","Бочонок: пиво, медовуха, сыр","4.5.0","all",MR+"hIu9KJTT",cdn("hIu9KJTT","MbcR48Ou","BrewinAndChewin-neoforge-4.5.0%2B1.21.1.jar")],
+    ["Cocktails Delight","Вино, крепкие напитки и коктейли","1.1.10","all",MR+"hzcliQdE",cdn("hzcliQdE","bQXU23Fh","Cocktails-Delight-1.21.1-NeoForge-1.1.10.jar")],
+    ["Tobacconist","Табак, трубки, сигары и кальян","4.2.0","all",MR+"67HcuvfL",cdn("67HcuvfL","n43czTcW","tobacconistmod-4.2.0-neoforge-1.21.1.jar")],
+    ["Tide","Рыбалка: 100+ видов рыбы, журнал, мини-игра","2.1.1","all",MR+"die1AF7i",cdn("die1AF7i","1ki6UyqV","tide-neoforge-1.21.1-2.1.1.jar")],
+    ["Exposure","Плёночные фотоаппараты и проявка снимков","1.9.19","all",MR+"hB899VmG",cdn("hB899VmG","iBvaR6AK","exposure-neoforge-1.21.1-1.9.19.jar")],
+    ["Exposure: Polaroid","Моментальная камера","1.1.6","all",MR+"WEWiqYkW",cdn("WEWiqYkW","WfVyzdJL","exposure_polaroid-neoforge-1.21.1-1.1.6.jar")],
+    ["Joy of Painting","Мольберт и рисование картин","1.4.0","all",CF+"search?search=joy%20of%20painting%20neo",null,"cf"],
+    ["Immersive Melodies","Музыкальные инструменты и мелодии","0.8.2","all",MR+"TaSmHw8V",cdn("TaSmHw8V","5Lld5obZ","immersive_melodies-neoforge-0.8.2%2B1.21.1.jar")],
+    ["Another Furniture","Мебель в ванильном стиле","4.0.3","all",MR+"ulloLmqG",cdn("ulloLmqG","cugGiMKt","another_furniture-neoforge-4.0.3.jar")],
+    ["Display Delight","Еда и напитки ставятся на стол в 3D","1.7.0","all",MR+"yXepZhp8",cdn("yXepZhp8","xiS3GrrW","displaydelight-1.7.0.jar")],
+    ["Mighty Mail","Почтовые ящики и посылки","1.1.4","all",CF+"mc-mods/mighty-mail",null,"cf"],
+    ["GraveStone","Вещи сохраняются в могиле после смерти","1.0.40","all",MR+"RYtXKJPr",cdn("RYtXKJPr","rMGJpjaM","gravestone-neoforge-1.21.1-1.0.40.jar")]
+  ],
+  "Интерфейс": [
+    ["JEI","Рецепты всех предметов","19.64.0.455","all",MR+"u6dRKJwZ",cdn("u6dRKJwZ","iv3KiVkE","jei-1.21.1-neoforge-19.64.0.455.jar")],
+    ["Jade","Название блока под прицелом","15.10.6","all",MR+"nvQzSEkH",cdn("nvQzSEkH","eYz2YBGT","Jade-1.21.1-NeoForge-15.10.6.jar")],
+    ["AppleSkin","Сытость еды при наведении","3.0.9","all",MR+"EsAfCjCV",cdn("EsAfCjCV","uAKA6Laj","appleskin-neoforge-mc1.21-3.0.9.jar")],
+    ["Xaero's World Map","Карта мира","1.47.0","client",MR+"NcUtCpym",cdn("NcUtCpym","SnQ4SoDe","xaeroworldmap-neoforge-1.21.1-1.47.0.jar")]
+  ],
+  "Голос и атмосфера": [
+    ["Simple Voice Chat","Голосовой чат: слышно тех, кто рядом","2.6.22","all",MR+"9eGKb6K1",cdn("9eGKb6K1","2s7zUspF","voicechat-neoforge-1.21.1-2.6.22.jar")],
+    ["Sound Physics Remastered","Эхо и приглушение звука стенами","1.5.2","client",MR+"qyVF9oeo",cdn("qyVF9oeo","85fA7L1W","sound-physics-remastered-neoforge-1.21.1-1.5.2.jar")],
+    ["Subtle Effects","Светлячки и мелкие эффекты","1.15.1","client",MR+"4q8UOK1d",cdn("4q8UOK1d","ReUDmzrA","SubtleEffects-neoforge-1.21.1-1.15.1.jar")],
+    ["AmbientSounds","Звуки природы","6.3.11","client",MR+"fM515JnW",cdn("fM515JnW","WGalCQAo","AmbientSounds_NEOFORGE_v6.3.11_mc1.21.1.jar")],
+    ["Particle Rain","Дождь и снег из частиц","4.0.3","client",MR+"nrikgvxm",cdn("nrikgvxm","inhna3NE","particlerain-4.0.3%2B1.21.1-neoforge.jar")],
+    ["Wick","Свет от факела и фонаря в руке","1.0.0","client",CF+"mc-mods/wick-lights",null,"cf"]
+  ],
+  "Графика": [
+    ["Sodium","Быстрый рендер","0.8.13","client",MR+"AANobbMI",cdn("AANobbMI","uMOpc5uV","sodium-neoforge-0.8.13%2Bmc1.21.1.jar")],
+    ["Iris","Поддержка шейдеров","1.8.14-beta.1","client",MR+"YL57xq9U",cdn("YL57xq9U","KduFYu4t","iris-neoforge-1.8.14-beta.1%2Bmc1.21.1.jar")],
+    ["Colorwheel","Шейдеры + Create без потери FPS","1.3.2","client",MR+"BzHgFoGz",cdn("BzHgFoGz","lV874ox8","colorwheel-neoforge-1.3.2%2Bmc1.21.1.jar")],
+    ["Entity Model Features","Нужен для Fresh Animations","3.3.12","client",MR+"4I1XuqiY",cdn("4I1XuqiY","197m3VoU","entity_model_features-3.3.12-1.21-neoforge.jar")],
+    ["Entity Texture Features","Нужен для Fresh Animations","7.2.7","client",MR+"BVzZfTc1",cdn("BVzZfTc1","1DVPB3a4","entity_texture_features-7.2.7-1.21-neoforge.jar")],
+    ["Complementary Reimagined","Шейдер (в папку shaderpacks)","r5.9.3","client",MR+"HVnmMxH1",cdn("HVnmMxH1","Bqen1mJX","ComplementaryReimagined_r5.9.3.zip")],
+    ["Fresh Animations","Пак анимаций мобов (в resourcepacks)","1.11.2","client",MR+"50dA9Sha",cdn("50dA9Sha","HC1XRKGD","FreshAnimations_v1.11.2_1.20%2B.zip")],
+    ["FA+ Player","Пак анимаций игроков (в resourcepacks)","1.1","client",MR+"TAIMVZCL",cdn("TAIMVZCL","Wj7NeGjP","FA%2BPlayer-v1.1.zip")]
+  ],
+  "Оптимизация": [
+    ["ImmediatelyFast","Ускоряет отрисовку интерфейса и текста","1.6.15","client",MR+"5ZwdcRci",cdn("5ZwdcRci","EJzmEPZV","ImmediatelyFast-NeoForge-1.6.15%2B1.21.1.jar")],
+    ["Entity Culling","Не рисует то, чего не видно","1.11.3","client",MR+"NNAgCjsB",cdn("NNAgCjsB","eieYbWYb","entityculling-neoforge-1.11.3-mc1.21.1.jar")],
+    ["Dynamic FPS","Меньше нагрузки, когда игра свёрнута","3.11.4","client",MR+"LQ3K71Q1",cdn("LQ3K71Q1","T238FZpQ","dynamic-fps-3.11.4%2Bminecraft-1.21.0-neoforge.jar")],
+    ["FerriteCore","Меньше расход памяти","7.0.3","all",MR+"uXXizFIs",cdn("uXXizFIs","x7kQWVju","ferritecore-7.0.3-neoforge.jar")],
+    ["ModernFix","Быстрее загрузка и меньше памяти","5.27.27","all",MR+"nmDcB62a",cdn("nmDcB62a","ZDZENbHH","modernfix-neoforge-5.27.27%2Bmc1.21.1.jar")],
+    ["Lithium","Оптимизация игровой логики","0.15.4","all",MR+"gvQqBUqZ",cdn("gvQqBUqZ","DDUrRVCA","lithium-neoforge-0.15.4%2Bmc1.21.1.jar")]
+  ],
+  "Библиотеки": [
+    ["Create: Dragons Plus","Нужна для Central Kitchen","1.11.9","all",MR+"dzb1a5WV",cdn("dzb1a5WV","b0u9vk8C","CreateDragonsPlus-1.11.9.jar")],
+    ["Patchouli","Книги-гайды внутри игры","1.21.1-93","all",MR+"nU0bVIaL",cdn("nU0bVIaL","BIogJv2D","Patchouli-1.21.1-93-NEOFORGE.jar")],
+    ["Curios","Дополнительные слоты (трубка во рту)","9.5.1","all",MR+"vvuO3ImH",cdn("vvuO3ImH","yohfFbgD","curios-neoforge-9.5.1%2B1.21.1.jar")],
+    ["Framework","Нужна для Mighty Mail","0.13.11","all",CF+"mc-mods/framework",null,"cf"],
+    ["Resourceful Lib","Библиотека","3.0.12","all",MR+"G1hIVOrD",cdn("G1hIVOrD","x99nCLTm","resourcefullib-neoforge-1.21-3.0.12.jar")],
+    ["Balm","Библиотека","21.0.67","all",MR+"MBAkmtvl",cdn("MBAkmtvl","gMedgtzL","balm-neoforge-1.21.1-21.0.67.jar")],
+    ["Cloth Config","Библиотека настроек","15.0.140","all",MR+"9s6osm5g",cdn("9s6osm5g","izKINKFg","cloth-config-15.0.140-neoforge.jar")],
+    ["YetAnotherConfigLib","Библиотека настроек","3.8.2","all",MR+"1eAoo2KR",cdn("1eAoo2KR","7TVdVtxF","yet_another_config_lib_v3-3.8.2%2B1.21.1-neoforge.jar")],
+    ["Fzzy Config","Библиотека настроек","0.7.7","all",MR+"hYykXjDp",cdn("hYykXjDp","jRuOkBAG","fzzy_config-0.7.7%2Bfix1%2B1.21%2Bneoforge.jar")],
+    ["Kotlin for Forge","Библиотека","5.12.0","all",MR+"ordsPcFz",cdn("ordsPcFz","uhJhCT7X","kotlinforforge-5.12.0-all.jar")],
+    ["MezzConfig","Нужна для JEI","0.6.10","all",MR+"7tEfOcA7",cdn("7tEfOcA7","sL7Ghaz1","mezz_config-1.21.1-neoforge-0.6.10-standalone.jar")],
+    ["CreativeCore","Нужна для AmbientSounds","2.13.52","client",MR+"OsZiaDHq",cdn("OsZiaDHq","JS0K93bG","CreativeCore_NEOFORGE_v2.13.52_mc1.21.1.jar")]
+  ],
+  "Служебные": [
+    ["AutoModpack","Раздаёт сборку игрокам","4.0.7","all",MR+"k68glP2e",cdn("k68glP2e","QpFRQTSU","automodpack-mc1.21.1-neoforge-4.0.7.jar")],
+    ["SkinRestorer","Скины на сервере","2.11.1","server",MR+"ghrZDhGW",null],
+    ["DirectAuth","Вход по паролю","—","server",CF+"mc-mods/directauth",null,"cf"]
+  ]
+};
+
+/* ---------- пиксельные иконки ---------- */
+const PAL={k:"#3b3a36",w:"#f4f1ea",a:"#d29a3a",A:"#9a6a22",y:"#e0a63a",b:"#4f8fd1",B:"#2f5f9e",g:"#6aa84f",G:"#3f7a34",r:"#cf5050",p:"#c9a26b",P:"#9d7748",s:"#b8c4cc",e:"#c9b48e",n:"#5c4a3a",l:"#8fc6e8",c:"currentColor"};
+const ICONS={
+ gear:["..aa.aa.",".aaaaaaa","aaAAAAa.",".aA..Aaa","aaA..Aa.",".aAAAAaa","aaaaaaa.",".aa.aa.."],
+ pot:[".s..s...","..s..s..","kkkkkkkk",".kkkkkk.",".kkkkkk.",".kkkkkk.","..kkkk..","........"],
+ mug:[".wwwww..",".wwwwww.",".yyyyyss",".yyyyy.s",".yyyyyss",".yyyyy..",".yyyyy..","........"],
+ fish:["........","....b...",".B.bbbb.",".BBbbbwb",".B.bbbb.","....b...","........","........"],
+ camera:["........","..kk....","kkkkkkkk","kkkllkkk","kkllllkk","kkkllkkk","kkkkkkkk","........"],
+ palette:["........",".pppppp.","pprpgpbp","pppppppp","ppyp..pp",".pppp.p.","..pppp..","........"],
+ note:["....kkkk","....kkkk","....k..k","....k..k","..kkk.kk",".kkkkkkk",".kkk.kk.","........"],
+ mail:["........","eeeeeeee","enneenne","eennnnee","eeennnee","eeeeeeee","eeeeeeee","........"],
+ leaf:["......gg","....gggg","...ggGgg","..ggGgg.",".ggGgg..",".gGgg...","G.gg....","G......."],
+ chest:["........",".PPPPPP.","PppppppP","PPPPPPPP","PppkkppP","PppppppP","PPPPPPPP","........"],
+ book:["........",".rrrrrr.",".rwwwwr.",".rwkkwr.",".rwwwwr.",".rwkkwr.",".rrrrrr.","........"],
+ house:["...cc...","..cccc..",".cccccc.","cccccccc",".c....c.",".c.cc.c.",".c.cc.c.",".cccccc."],
+ check:["........","......cc",".....cc.","c...cc..","cc.cc...",".ccc....","..c.....","........"],
+ down:["...cc...","...cc...","...cc...","c..cc..c","cc.cc.cc",".cccccc.","..cccc..","...cc..."]
+};
+function pxSvg(rows){let r="";rows.forEach((row,y)=>[...row].forEach((ch,x)=>{if(PAL[ch])r+=`<rect x="${x}" y="${y}" width="1" height="1" fill="${PAL[ch]}"/>`}));return `<svg viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true">${r}</svg>`}
+document.querySelectorAll("[data-px]").forEach(el=>{const m=ICONS[el.dataset.px];if(m)el.innerHTML=pxSvg(m)});
+
+/* ---------- утилиты ---------- */
+const $ = (s,el=document)=>el.querySelector(s);
+const $$ = (s,el=document)=>[...el.querySelectorAll(s)];
+function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove("show"),1600)}
+async function copy(text){
+  try{await navigator.clipboard.writeText(text)}
+  catch(e){const ta=document.createElement("textarea");ta.value=text;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();try{document.execCommand("copy")}catch(_){ }ta.remove()}
+  toast("Скопировано");
+}
+
+/* ---------- подстановка настроек ---------- */
+$$("[data-cfg]").forEach(el=>{const v=CONFIG[el.dataset.cfg];if(v)el.textContent=v});
+$$("[data-href-cfg]").forEach(el=>{const v=CONFIG[el.dataset.hrefCfg];if(v)el.href=v});
+$$("[data-copy-cfg]").forEach(b=>b.addEventListener("click",()=>{const v=CONFIG[b.dataset.copyCfg];if(v)copy(v);else toast("Пока нет — появится после запуска")}));
+document.title = CONFIG.serverName + " — Minecraft";
+
+/* ---------- обратный отсчёт ---------- */
+(function(){
+  const target = new Date(CONFIG.launch).getTime();
+  const pad = n=>String(n).padStart(2,"0");
+  function tick(){
+    let s = Math.floor((target-Date.now())/1000);
+    if(isNaN(s)){ $("#countdown").hidden=true; return; }
+    if(s<=0){ $("#cd").outerHTML='<div class="cd-done">Сервер открыт — заходи!</div>'; return; }
+    const d=Math.floor(s/86400); s%=86400;
+    const h=Math.floor(s/3600); s%=3600;
+    const m=Math.floor(s/60); s%=60;
+    $("#cd-d").textContent=d; $("#cd-h").textContent=pad(h); $("#cd-m").textContent=pad(m); $("#cd-s").textContent=pad(s);
+    setTimeout(tick,1000);
+  }
+  tick();
+})();
+
+/* ---------- статус сервера (через публичный сервис mcsrvstat.us) ---------- */
+(function(){
+  const box=$("#status"), dot=$(".dot",box), txt=box.lastElementChild;
+  if(!CONFIG.ip || CONFIG.ip.includes("example")) return;
+  txt.textContent="Проверяем статус…";
+  fetch("https://api.mcsrvstat.us/3/"+encodeURIComponent(CONFIG.ip))
+    .then(r=>r.json())
+    .then(d=>{
+      if(d.online){dot.className="dot on";txt.textContent=`Онлайн · игроков: ${d.players?.online??0} из ${d.players?.max??"?"}`}
+      else{dot.className="dot off";txt.textContent="Сервер сейчас выключен"}
+    })
+    .catch(()=>{txt.textContent="Статус недоступен"});
+})();
+
+/* ---------- вкладки установки ---------- */
+$$(".tab").forEach(tab=>tab.addEventListener("click",()=>{
+  $$(".tab").forEach(t=>t.setAttribute("aria-selected","false"));
+  $$(".panel").forEach(p=>p.hidden=true);
+  tab.setAttribute("aria-selected","true");
+  $("#"+tab.getAttribute("aria-controls")).hidden=false;
+}));
+
+/* ---------- список модов ---------- */
+(function(){
+  const side={all:["b-all","Все"],client:["b-client","Игра"],server:["b-server","Сервер"]};
+  const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  let html="", total=0;
+  for(const [group,list] of Object.entries(MODS)){
+    total+=list.length;
+    html+=`<div class="group" data-group><h3>${group} <span>${list.length}</span></h3><div class="tbl"><table><thead><tr><th>Мод</th><th>Что делает</th><th>Где</th><th>Версия</th><th>Ссылки</th></tr></thead><tbody>`;
+    for(const [name,desc,ver,sd,page,file,src] of list){
+      const [cls,label]=side[sd];
+      const where = src==="cf" ? "CurseForge" : "Modrinth";
+      html+=`<tr data-q="${esc((name+" "+desc).toLowerCase())}">
+        <td><span class="modname">${esc(name)}</span><br><span class="src">${where}</span></td>
+        <td class="desc">${esc(desc)}</td>
+        <td><span class="badge ${cls}">${label}</span></td>
+        <td class="ver">${esc(ver||"—")}</td>
+        <td class="lnk links"><a href="${page}" target="_blank" rel="noopener">страница</a>${file?`<a href="${file}">файл</a>`:""}</td></tr>`;
+    }
+    html+=`</tbody></table></div></div>`;
+  }
+  $("#modlist").innerHTML=html;
+  const count=$("#modcount");
+  count.textContent=`Всего: ${total}`;
+  $("#modtotal").textContent=`(${total})`;
+  $("#modsearch").addEventListener("input",e=>{
+    const q=e.target.value.trim().toLowerCase(); let shown=0;
+    $$("#modlist tr[data-q]").forEach(tr=>{const ok=!q||tr.dataset.q.includes(q);tr.hidden=!ok;if(ok)shown++});
+    $$("#modlist [data-group]").forEach(g=>{g.hidden=!$$("tr[data-q]",g).some(tr=>!tr.hidden)});
+    count.textContent=q?`Найдено: ${shown}`:`Всего: ${total}`;
+  });
+})();
+</script>
+</body>
+</html>
